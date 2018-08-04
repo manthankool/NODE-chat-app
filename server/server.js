@@ -17,29 +17,25 @@ app.use(express.static(publicPath));  //express middleware is used to server tha
 io.on('connection', (socket) => { //conection is the name of event which lets you listen for new connections and it lets you do something when that connection comes in. This socket is similar to the socket in index.html
   console.log('new user connected');
 
-  socket.emit('newEmail', {
-    from:'manthankoolwal2450@gmail.com',
-    text:'Hey get fucked by me',
-    createAt:123
-  });       //now , this is not a listner so, we will not provide any callback
-
-  socket.on('createEmail', (newEmail) => {
-    console.log('New Email', newEmail);
-
-  });
+     //now , this is not a listner so, we will not provide any callback
 
   socket.on('disconnect',() => {
     console.log('User has been disconnected from the server');
   });
 
-  socket.emit('newMessage',{
-    from:'Manthan',
-    text:'do you want to come',
-    createdAt:new Date()
-  });
+  // socket.emit('newMessage',{
+  //   from:'Manthan',
+  //   text:'do you want to come',
+  //   createdAt:new Date()
+  // });
 
   socket.on('createMessage',(message) => {
-    console.log('Create Message',message);
+    
+    io.emit('newMessage',{
+      from:message.from,
+      text:message.text,
+      createdAt:new Date().getTime()
+    });
   });
 
 });
