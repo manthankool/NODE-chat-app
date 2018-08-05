@@ -5,7 +5,7 @@ const socketIO = require('socket.io');
 
 var publicPath = path.join(__dirname + './../public');    //__driname is refering to current folder
 
-
+const {generateMessage} = require('./utils/message');
 
 const port = process.env.PORT || 3000;
 var app = express();
@@ -16,21 +16,13 @@ app.use(express.static(publicPath));  //express middleware is used to server tha
 
 io.on('connection', (socket) => { //conection is the name of event which lets you listen for new connections and it lets you do something when that connection comes in. This socket is similar to the socket in index.html
   console.log('new user connected');
-  
+
 
      //now , this is not a listner so, we will not provide any callback
 
- socket.emit('newMessage',{
-   from:'Admin',
-   text:'Welcome to the chat app',
-   createdAt:new Date().getTime()
- });
+ socket.emit('newMessage',generateMessage('Admin','Welcome to the chat app'));
 
- socket.broadcast.emit('newMessage',{
-   from:'Admin',
-   text:'New User joined',
-   createdAt:new Date().getTime()
- });
+ socket.broadcast.emit('newMessage',generateMessage('Admin','New User Joined'));
 
   socket.on('disconnect',() => {
     console.log('User has been disconnected from the server');
@@ -46,11 +38,7 @@ io.on('connection', (socket) => { //conection is the name of event which lets yo
 
 
 
-    io.emit('newMessage',{
-      from:message.from,
-      text:message.text,
-      createdAt:new Date().getTime()
-    });
+    io.emit('newMessage',generateMessage(message.from,message.text));
   });
   //   socket.broadcast.emit('newMessage',{
   //     from:message.from,
@@ -63,3 +51,5 @@ io.on('connection', (socket) => { //conection is the name of event which lets yo
 server.listen(port, () => {
   console.log('server is working');
 });
+
+module.exports.app = app;
