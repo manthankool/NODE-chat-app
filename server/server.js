@@ -20,12 +20,12 @@ io.on('connection', (socket) => { //conection is the name of event which lets yo
 
      //now , this is not a listner so, we will not provide any callback
 
- socket.emit('newMessage',generateMessage('Admin','Welcome to the chat app'));
+ socket.emit('newMessage',generateMessage('Admin','Welcome to the chat app'));  
 
- socket.broadcast.emit('newMessage',generateMessage('Admin','New User Joined'));
+ socket.broadcast.emit('newMessage',generateMessage('Admin','New User Joined'));   //sends to all of them but the new user joined
 
   socket.on('disconnect',() => {
-    console.log('User has been disconnected from the server');
+    console.log('User has been disconnected from the server');     //send only to one person
   });
 
   // socket.emit('newMessage',{
@@ -34,11 +34,10 @@ io.on('connection', (socket) => { //conection is the name of event which lets yo
   //   createdAt:new Date()
   // });
 
-  socket.on('createMessage',(message) => {
-
-
-
+  socket.on('createMessage',(message, callback) => {
+    console.log('message',message);
     io.emit('newMessage',generateMessage(message.from,message.text));
+    callback('This is from the server');
   });
   //   socket.broadcast.emit('newMessage',{
   //     from:message.from,
