@@ -5,7 +5,7 @@ const socketIO = require('socket.io');
 
 var publicPath = path.join(__dirname + './../public');    //__driname is refering to current folder
 
-const {generateMessage} = require('./utils/message');
+const {generateMessage, generateLocationMessage} = require('./utils/message');
 
 const port = process.env.PORT || 3000;
 var app = express();
@@ -20,7 +20,7 @@ io.on('connection', (socket) => { //conection is the name of event which lets yo
 
      //now , this is not a listner so, we will not provide any callback
 
- socket.emit('newMessage',generateMessage('Admin','Welcome to the chat app'));  
+ socket.emit('newMessage',generateMessage('Admin','Welcome to the chat app'));
 
  socket.broadcast.emit('newMessage',generateMessage('Admin','New User Joined'));   //sends to all of them but the new user joined
 
@@ -45,6 +45,10 @@ io.on('connection', (socket) => { //conection is the name of event which lets yo
   //     createdAt:new Date().getTime()
   //   });
   // });
+
+  socket.on('createLocationMessage', (coords) => {
+    io.emit('newLocationMessage', generateLocationMessage('Admin',coords.latitude, coords.longitude));
+  });
 
 });
 server.listen(port, () => {
