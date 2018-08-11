@@ -44,12 +44,12 @@ socket.on('disconnect', function() {
 
 jQuery('#message-form').on('submit', function (e) {     //here e is overiding the disadvantage of using the form method. It will avoid refreshing the whole page. Submit is a jQuery event handler
   e.preventDefault();     // it will prevent the default behaviour of the event
-
+  var messageTextbox = jQuery('[name=message]');
   socket.emit('createMessage',{
     from:'User',
-    text:jQuery('[name=message]').val()
+    text:messageTextbox.val()
   }, function () {
-
+    messageTextbox.val('')
   });
 });
 
@@ -60,13 +60,16 @@ locationButton.on('click', function(e) {
     return alert('Geolocation not supported by your browser');
   }
 
+  locationButton.attr('disabled','disabled').text('Sending Location...');
+
   navigator.geolocation.getCurrentPosition(function (position) {            //navigator is the inbuilt function of geolocation and it will take two function . One is success
-    console.log(position);
+    locationButton.removeAttr('disabled').text('Send location');
     socket.emit('createLocationMessage', {
       latitude: position.coords.latitude,
       longitude: position.coords.longitude
     });
   }, function () {
+    locationButton.removeAttr('disabled').text('Send location');
     return alert('Unable to fetch location');
   });
 
